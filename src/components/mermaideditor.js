@@ -125,15 +125,6 @@ export default function Editor() {
         <button onClick={() => document.getElementById('fileInput').click()}>Import Data</button>
       </div>
       <div className="full flex justify-center">
-        <span className="half flex-1">
-          <textarea
-            value={mermaidChart}
-            onChange={change}
-            onKeyDown={handleKeyDown}
-            rows={10}
-            className="w-full p-2 border border-gray-300 rounded"
-          ></textarea>
-        </span>
         <span>
           <input
             type="text"
@@ -202,9 +193,6 @@ export default function Editor() {
               </li>
             ))}
           </ul>
-        </span>
-        <span className="half flex-1">
-          <Mermaid chart={mermaidChart} key={mermaidChart} />
         </span>
       </div>
     </main>
