@@ -19,14 +19,6 @@ export default function Editor() {
   const [items, setItems] = useState([]);
   const [inputValue, setInputValue] = useState('');
 
-  const arrowTypes = ["->>", "-->>", "--x", "-x", "->", "-->"];
-  const [arrowList, setArrowList] = useState([]);
-  
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [toItem, setToItem] = useState(null);
-  const [selectedArrow, setSelectedArrow] = useState([]);
-  const [arrowText, setArrowText] = useState('');
-
   const change = (e) => {
     setMermaidChart(e.target.value);
   };
@@ -50,13 +42,6 @@ export default function Editor() {
     reorderedItems.splice(result.destination.index, 0, removed);
 
     setItems(reorderedItems);
-  };
-
-  const addArrow = () => {
-    if (selectedItem && toItem && arrowText.trim()) {
-      setArrowList([...arrowList, { item: selectedItem, item2: toItem, text: arrowText.trim() }]);
-      setArrowText('');
-    }
   };
 
   const handleKeyDown = (event) => {
@@ -90,7 +75,11 @@ export default function Editor() {
   };
   
   const handleExport = () => {
-    downloadFile('sequencediagram.txt', mermaidChart);
+    let text = ""
+    for(let notes in items){
+      text = text + notes + ","
+    }
+    downloadFile('sequencediagram.txt', text);
   };
 
   const handleFileUpload = (event) => {
@@ -101,7 +90,7 @@ export default function Editor() {
       const content = e.target.result;
       try {
         const importedData = content;
-        setMermaidChart(importedData);
+        setItems(importedData.split(","))
       } catch (error) {
         console.error('Error parsing imported data:', error);
         alert('An error occurred while reading the data');
@@ -160,8 +149,6 @@ export default function Editor() {
                         >
                           {item}
                           <button onClick={() => removeItem(index)}>Remove</button>
-                          <button onClick={() => setSelectedItem(item)}>Select</button>
-                          <button onClick={() => setToItem(item)}>Select</button>
                         </li>
                       )}
                     </Draggable>
@@ -171,28 +158,6 @@ export default function Editor() {
               )}
             </Droppable>
           </DragDropContext>
-
-          {selectedItem && (
-            <div>
-              <h3>Add Text for: {selectedItem}</h3>
-              <input
-                type="text"
-                value={arrowText}
-                onChange={(e) => setArrowText(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && addArrow()}
-              />
-              <button onClick={addArrow}>Add Text</button>
-            </div>
-          )}
-
-          <h2>Second List</h2>
-          <ul>
-            {arrowList.map((item, index) => (
-              <li key={index}>
-                {item.item}:{item.item2}:{item.text}
-              </li>
-            ))}
-          </ul>
         </span>
       </div>
     </main>
