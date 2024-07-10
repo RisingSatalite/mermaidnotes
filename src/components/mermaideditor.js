@@ -41,10 +41,16 @@ export default function Editor() {
   
   const handleExport = () => {
     let text = ""
-    for(let notes in items){
-      text = text + notes + ","
+    //console.log(items)
+    for (let note of items) {
+      text += note + ",";
+      //console.log(note);
     }
-    downloadFile('sequencediagram.txt', text);
+    //Remove trailing comma
+    if (text.endsWith(",")) {
+      text = text.slice(0, -1);
+    }
+    downloadFile('MermaidNotes.txt', text);
   };
 
   const handleFileUpload = (event) => {
@@ -55,6 +61,10 @@ export default function Editor() {
       const content = e.target.result;
       try {
         const importedData = content;
+        console.log(content)
+        for(let i in importedData.split(",")){
+          console.log(i)
+        }
         setItems(importedData.split(","))
       } catch (error) {
         console.error('Error parsing imported data:', error);
