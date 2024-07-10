@@ -6,22 +6,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 const Mermaid = dynamic(() => import('@/components/mermaid'), { ssr: false });
 
 export default function Editor() {
-  const [mermaidChart, setMermaidChart] = useState(`sequenceDiagram
-    Alice ->> Bob: Hello Bob, how are you?
-    Bob-->>John: How about you John?
-    Bob--x Alice: I am good thanks!
-    Bob-x John: I am good thanks!
-    Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
-
-    Bob-->Alice: Checking with John...
-    Alice->John: Yes... John, how are you?
-  `);
   const [items, setItems] = useState([]);
   const [inputValue, setInputValue] = useState('');
-
-  const change = (e) => {
-    setMermaidChart(e.target.value);
-  };
 
   const addItem = () => {
     if (inputValue.trim()) {
@@ -42,27 +28,6 @@ export default function Editor() {
     reorderedItems.splice(result.destination.index, 0, removed);
 
     setItems(reorderedItems);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent the default newline behavior
-
-      const { selectionStart, selectionEnd, value } = event.target;
-      const currentLineStart = value.lastIndexOf('\n', selectionStart - 1) + 1;
-      const currentLine = value.substring(currentLineStart, selectionStart);
-      const leadingSpaces = currentLine.match(/^\s*/)[0];
-
-      const newValue = 
-        value.substring(0, selectionStart) + '\n' + leadingSpaces + value.substring(selectionEnd);
-
-      setMermaidChart(newValue);
-
-      // Move the cursor to the new position
-      setTimeout(() => {
-        event.target.selectionStart = event.target.selectionEnd = selectionStart + leadingSpaces.length + 1;
-      }, 0);
-    }
   };
 
   const downloadFile = (filename, content) => {
